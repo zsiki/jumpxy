@@ -1,0 +1,106 @@
+<?php
+
+/******************************************************************************
+ *
+ * Purpose: Jump to point plugin
+ * Author:  Zoltan Siki
+ *
+ ******************************************************************************
+ *
+ * Copyright (c) 2013
+ *
+ * This is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version. See the COPYING file.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with p.mapper; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ ******************************************************************************/
+// prevent XSS
+if (isset($_REQUEST['_SESSION'])) exit();
+
+session_start();
+
+require_once($_SESSION['PM_INCPHP'] . "/common.php");
+require_once($_SESSION['PM_INCPHP'] . "/globals.php");
+require_once($_SESSION['PM_PLUGIN_REALPATH'] . "/common/easyincludes.php");
+
+header("Content-type: text/html; charset=$defCharset");
+
+?>
+<html>
+<head>
+<title><?php echo (_p("Jump XY")) ?></title>
+<?php
+	// get parameters
+	if(isset($_REQUEST["center_x"])) {
+		$center_x = $_REQUEST["center_x"];
+	} else {
+		$center_x = "";
+	}
+	if(isset($_REQUEST["center_y"])) {
+		$center_y = $_REQUEST["center_y"];
+	} else {
+		$center_y = "";
+	}
+	if(isset($_REQUEST["width"])) {
+		$width = $_REQUEST["width"];
+	} else {
+		$width = "";
+	}
+	$urlReqDir = getURLReqDir();
+//	$pmDir = getPMDir("jumpxy");
+/*
+	$strTmp = "var SID = '" . SID . "';\n"; 
+	
+	echo ("<script type=\"text/javascript\">\n");
+	echo $strTmp;
+	echo ("</script>\n");
+*/
+	$css = "<link rel=\"stylesheet\" href=\"" . $urlReqDir . "../common/commonforms.css\" type=\"text/css\" />\n";
+// custom CSS for this window:
+//	$css .= "<link rel=\"stylesheet\" href=\"" . $urlReqDir . "jumpxy.css\" type=\"text/css\" />\n";
+	if (strlen($css) > 0 ) {
+		echo $css;
+	}
+?>
+</head>
+<body>
+<div id="jumpxy-main">
+	<form action="" target="_blank" id="jumpxy-form" class="commonform" method="get">
+		<fieldset id="jumpxy">
+			<legend><?php echo (_p("East coordinate")) ?></legend>
+			<input type="text" id="jumpxy_xValue" name="jumpxy_xValue"
+			size="15" value="<?php echo $center_x;?>" />
+			<legend><?php echo (_p("North coordinate")) ?></legend>
+			<input type="text" id="jumpxy_yValue" name="jumpxy_yValue"
+			size="15" value="<?php echo $center_y;?>" />
+			<legend><?php echo (_p("Window size")) ?></legend>
+			<input type="text" id="jumpxy_width" name="jumpxy_widthValue"
+			size="15" value="<?php echo $width;?>" />
+		</fieldset>
+		<fieldset id="jumpxy_buttons">
+			<ol>
+				<li class="lastli">
+					<input id="jumpxy-btnApply"  class="jumpxy-btn" type="button"  value="<?php echo (_p("Apply")) ?>"  onclick="javascript:PM.Plugin.JumpXY.jump()" />
+<!--
+					<input id="jumpxy-btnCancel"  class="jumpxy-btn" type="button"  value="<?php echo (_p("Cancel")) ?>"  onclick="javascript:PM.Plugin.JumpXY.cancel()" />
+-->
+				</li>
+			</ol>
+		</fieldset>
+
+		<input type="hidden" name="<?php echo ini_get("session.name") ?>" value="<?php session_id() ?>" />
+    	<input type="hidden" name="config" value="<?php echo $_SESSION['config'] ?>" />
+	</form>
+</div>
+</body>
+</html>
